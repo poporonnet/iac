@@ -244,3 +244,14 @@ resource "cloudflare_dns_record" "terraform_managed_resource_05908300476f02b8a3a
   settings = {}
 }
 
+
+resource "cloudflare_dns_record" "terraform_managed_resource_e0a197d8c9df185bf5cd99cae8f7994c_0" {
+  content  = "133.18.124.103"
+  name     = "argocd.poporon.org"
+  proxied  = false
+  tags     = []
+  ttl      = 1
+  type     = "A"
+  zone_id  = "878133051abf4697f6c4151e0b8b425a"
+  settings = {}
+}
