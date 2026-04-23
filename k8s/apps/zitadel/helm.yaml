@@ -1,0 +1,77 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel
+  namespace: argocd
+spec:
+  destination:
+    namespace: zitadel
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    chart: zitadel
+    helm:
+      releaseName: zitadel
+      values: |
+        zitadel:
+          configmapConfig:
+            Log:
+              Level: info
+              Formatter:
+                Format: json
+            TLS:
+              Enabled: false
+            ExternalDomain: zitadel.poporon.org
+            ExternalPort: 443
+            ExternalSecure: true
+            Database:
+              Postgres:
+                Host: 10.33.2.25
+                Port: 5432
+                Database: zitadel
+                MaxOpenConns: 25
+                MaxIdleConns: 10
+                ConnMaxLifetime: 1h
+                User:
+                  Username: zitadel
+                  SSL:
+                    Mode: disable
+                Admin:
+                  Username: postgres
+                  SSL:
+                    Mode: disable
+          masterkeySecretName: "zitadel"
+          configSecretName: "zitadel"
+          configSecretKey: "config.yaml"
+        replicaCount: 1
+        ingress:
+          enabled: true
+          className: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: cluster-issuer
+          hosts:
+            - host: zitadel.poporon.org
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: zitadel-tls
+              hosts:
+                - zitadel.poporon.org
+        resources:
+          requests:
+            cpu: 10m
+            memory: 196Mi
+          limits:
+            memory: 1Gi
+    repoUrl: https://charts.zitadel.com
+    targetRevision: 9.33.2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - FailOnSharedResource=true
+
+
