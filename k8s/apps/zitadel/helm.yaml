@@ -64,7 +64,7 @@ spec:
             memory: 196Mi
           limits:
             memory: 1Gi
-    repoUrl: https://charts.zitadel.com
+    repoURL: https://charts.zitadel.com
     targetRevision: 9.33.2
   syncPolicy:
     automated:
