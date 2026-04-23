@@ -10,7 +10,7 @@ APPROLE_NAME="eso"
 SECRET_PATH="secret"
 
 vault() {
-  docker exec -e VAULT_ADDR="${VAULT_ADDR}" -e VAULT_TOKEN="${VAULT_TOKEN}" vault vault "$@"
+  docker exec -i -e VAULT_ADDR="${VAULT_ADDR}" -e VAULT_TOKEN="${VAULT_TOKEN}" vault vault "$@"
 }
 
 echo "==> KVv2シークレットエンジンを有効化"
