@@ -9,7 +9,9 @@ ESO_POLICY_NAME="eso-policy"
 APPROLE_NAME="eso"
 SECRET_PATH="secret"
 
-export VAULT_ADDR VAULT_TOKEN
+vault() {
+  docker exec -e VAULT_ADDR="${VAULT_ADDR}" -e VAULT_TOKEN="${VAULT_TOKEN}" vault vault "$@"
+}
 
 echo "==> KVv2シークレットエンジンを有効化"
 vault secrets enable -path="${SECRET_PATH}" kv-v2 2>/dev/null || echo "既に有効です"
