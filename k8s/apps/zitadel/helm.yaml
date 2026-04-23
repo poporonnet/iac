@@ -53,6 +53,7 @@ spec:
             cert-manager.io/cluster-issuer: cluster-issuer
             traefik.ingress.kubernetes.io/router.entrypoints: websecure
             traefik.ingress.kubernetes.io/router.tls: "true"
+            traefik.ingress.kubernetes.io/service.serversscheme: h2c
           hosts:
             - host: zitadel.poporon.org
               paths:
