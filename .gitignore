@@ -2,4 +2,5 @@ terraform/.terraform/
 terraform/terraform.tfstate
 terraform/terraform.tfstate.*
 
-compose/vault/data/
+compose/vault/data/*
+!compose/vault/data/.gitkeep

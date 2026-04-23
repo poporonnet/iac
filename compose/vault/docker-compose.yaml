@@ -11,8 +11,8 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - ./config:/vault/config:ro
-      - vault-data:/vault/data
+      - ./config:/vault/config
+      - ./data:/vault/data
     command: vault server -config=/vault/config/vault.hcl
     healthcheck:
       test: ["CMD", "vault", "status", "-address=http://127.0.0.1:8200"]
@@ -20,6 +20,3 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
-volumes:
-  vault-data:
