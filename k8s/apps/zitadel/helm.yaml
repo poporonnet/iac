@@ -43,7 +43,7 @@ spec:
           masterkeySecretName: "zitadel"
           configSecretName: "zitadel"
           configSecretKey: "config.yaml"
-        loginV2:
+        login:
           enabled: false
         replicaCount: 1
         ingress:
