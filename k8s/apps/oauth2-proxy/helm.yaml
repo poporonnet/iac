@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oauth2-proxy
+  namespace: argocd
+spec:
+  destination:
+    namespace: oauth2-proxy
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    chart: oauth2-proxy
+    helm:
+      releaseName: oauth2-proxy
+      values: |
+        config:
+          existingSecret: oauth2-proxy
+
+        extraArgs:
+          provider: oidc
+          oidc-issuer-url: https://zitadel.poporon.org
+          redirect-url: https://oauthproxy.poporon.org/oauth2/callback
+          upstream: "static://202"
+          email-domain: "*"
+          skip-provider-button: "true"
+          reverse-proxy: "true"
+          cookie-secure: "true"
+          cookie-domain: ".poporon.org"
+          scope: "openid profile email"
+          whitelist-domain: ".poporon.org"
+          cookie-csrf-per-request: "true"
+          cookie-csrf-expire: "5m"
+
+        ingress:
+          enabled: true
+          className: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: cluster-issuer
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
+          hosts:
+            - oauthproxy.poporon.org
+          tls:
+            - secretName: oauth2-proxy-tls
+              hosts:
+                - oauthproxy.poporon.org
+
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
+
+    repoURL: https://oauth2-proxy.github.io/manifests
+    targetRevision: 10.4.3
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

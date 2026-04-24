@@ -44,7 +44,23 @@ spec:
           configSecretName: "zitadel"
           configSecretKey: "config.yaml"
         login:
-          enabled: false
+          enabled: true
+          ingress:
+            enabled: true
+            className: traefik
+            annotations:
+              cert-manager.io/cluster-issuer: cluster-issuer
+              traefik.ingress.kubernetes.io/router.entrypoints: websecure
+              traefik.ingress.kubernetes.io/router.tls: "true"
+            hosts:
+              - host: zitadel.poporon.org
+                paths:
+                  - path: /ui/v2/login
+                    pathType: Prefix
+            tls:
+              - secretName: zitadel-tls
+                hosts:
+                  - zitadel.poporon.org
         replicaCount: 1
         ingress:
           enabled: true
@@ -70,7 +86,7 @@ spec:
           limits:
             memory: 1Gi
     repoURL: https://charts.zitadel.com
-    targetRevision: 9.33.2
+    targetRevision: 9.34.0
   syncPolicy:
     automated:
       prune: true
