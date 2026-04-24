@@ -6,6 +6,8 @@ resources:
   - resources/ingress.yaml
   - resources/certificate.yaml
   - resources/external-secret.yaml
+  - resources/system-appset.yaml
+  - resources/apps-appset.yaml
 helmCharts:
   - name: argo-cd
     repo: https://argoproj.github.io/argo-helm

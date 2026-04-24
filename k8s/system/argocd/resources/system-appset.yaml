@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: system
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  goTemplate: true
+  generators:
+    - git:
+        repoURL: https://github.com/poporonnet/iac.git
+        revision: k8s
+        directories:
+          - path: k8s/system/*
+  template:
+    metadata:
+      name: "{{ .path.basenameNormalized }}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/poporonnet/iac.git
+        targetRevision: k8s
+        path: "{{ .path.path }}"
+        kustomize:
+          buildOptions: "--enable-helm"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{ .path.basenameNormalized }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
