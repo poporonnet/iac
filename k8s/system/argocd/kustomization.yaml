@@ -6,6 +6,7 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
   - ingress.yaml
   - certificate.yaml
+  - external-secret.yaml
 patches:
   - patch: |-
       apiVersion: v1
@@ -14,3 +15,26 @@ patches:
         name: argocd-cmd-params-cm
       data:
         server.insecure: "true"
+  - patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-cm
+      data:
+        url: https://argocd.poporon.org
+        oidc.config: |
+          name: Zitadel
+          issuer: https://zitadel.poporon.org
+          clientID: $argocd-oidc:client_id
+          clientSecret: $argocd-oidc:client_secret
+          requestedScopes:
+            - openid
+            - profile
+            - email
+  - patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-rbac-cm
+      data:
+        policy.default: role:admin

@@ -6,7 +6,6 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.middlewares: oauth2-proxy-oauth2-errors@kubernetescrd,oauth2-proxy-oauth2-proxy@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
