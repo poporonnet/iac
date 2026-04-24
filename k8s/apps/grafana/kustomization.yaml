@@ -18,6 +18,9 @@ helmCharts:
         userKey: admin-user
         passwordKey: admin-password
 
+      initChownData:
+        enabled: false
+
       persistence:
         enabled: true
         storageClassName: longhorn
