@@ -20,8 +20,7 @@ spec:
         repoURL: https://github.com/poporonnet/iac.git
         targetRevision: main
         path: "{{ .path.path }}"
-        kustomize:
-          enableHelm: true
+        kustomize: {}
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .path.basenameNormalized }}"
