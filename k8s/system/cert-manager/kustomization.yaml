@@ -3,9 +3,7 @@ resources:
   - ./resources/cluster-issuer.yaml
   - ./resources/staging-cluster-issuer.yaml
   - ./resources/cluster-issuer-poporon-org.yaml
-
-generators:
-  - ksops.yaml
+  - ./resources/external-secret.yaml
 
 configurations:
   - kustomize-config.yaml

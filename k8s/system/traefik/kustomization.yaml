@@ -3,8 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - oauth2-proxy-middleware.yaml
-generators:
-  - ksops.yaml
+  - external-secret.yaml
 helmCharts:
   - name: traefik
     repo: https://helm.traefik.io/traefik
