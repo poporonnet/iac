@@ -1,0 +1,84 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: zitadel
+resources:
+  - external-secret.yaml
+helmCharts:
+  - name: zitadel
+    repo: https://charts.zitadel.com
+    version: "9.34.0"
+    releaseName: zitadel
+    namespace: zitadel
+    valuesInline:
+      zitadel:
+        configmapConfig:
+          Log:
+            Level: info
+            Formatter:
+              Format: json
+          TLS:
+            Enabled: false
+          ExternalDomain: zitadel.poporon.org
+          ExternalPort: 443
+          ExternalSecure: true
+          Database:
+            Postgres:
+              Host: 10.33.2.25
+              Port: 5432
+              Database: zitadel
+              MaxOpenConns: 25
+              MaxIdleConns: 10
+              ConnMaxLifetime: 1h
+              User:
+                Username: zitadel
+                SSL:
+                  Mode: disable
+              Admin:
+                Username: postgres
+                SSL:
+                  Mode: disable
+        masterkeySecretName: "zitadel"
+        configSecretName: "zitadel"
+        configSecretKey: "config.yaml"
+      login:
+        enabled: true
+        ingress:
+          enabled: true
+          className: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: cluster-issuer
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
+          hosts:
+            - host: zitadel.poporon.org
+              paths:
+                - path: /ui/v2/login
+                  pathType: Prefix
+          tls:
+            - secretName: zitadel-tls
+              hosts:
+                - zitadel.poporon.org
+      replicaCount: 1
+      ingress:
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: cluster-issuer
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: "true"
+          traefik.ingress.kubernetes.io/service.serversscheme: h2c
+        hosts:
+          - host: zitadel.poporon.org
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: zitadel-tls
+            hosts:
+              - zitadel.poporon.org
+      resources:
+        requests:
+          cpu: 10m
+          memory: 196Mi
+        limits:
+          memory: 1Gi
