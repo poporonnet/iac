@@ -43,6 +43,7 @@ helmCharts:
           client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
           use_pkce: true
           role_attribute_path: '"urn:zitadel:iam:org:project:roles".admin && ''Admin'' || ''Viewer'''
+          use_id_token: true
 
       envFromSecret: grafana
 
