@@ -22,6 +22,7 @@ helmCharts:
           server.insecure: true
         cm:
           url: https://argocd.poporon.org
+          kustomize.buildOptions: "--enable-helm"
           oidc.config: |
             name: Zitadel
             issuer: https://zitadel.poporon.org
