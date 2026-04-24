@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-poporon-org
+  namespace: argocd
+spec:
+  secretName: wildcard-poporon-org-tls
+  dnsNames:
+    - "*.poporon.org"
+  issuerRef:
+    name: cluster-issuer-poporon-org
+    kind: ClusterIssuer

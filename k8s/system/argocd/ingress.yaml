@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server
+  namespace: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: oauth2-proxy-oauth2-errors@kubernetescrd,oauth2-proxy-oauth2-proxy@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - argocd.poporon.org
+      secretName: wildcard-poporon-org-tls
+  rules:
+    - host: argocd.poporon.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
