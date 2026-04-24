@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - oauth2-proxy-middleware.yaml
+generators:
+  - ksops.yaml
+helmCharts:
+  - name: traefik
+    repo: https://helm.traefik.io/traefik
+    version: "33.2.1"
+    releaseName: traefik
+    namespace: traefik
+    valuesInline:
+      ports:
+        web:
+          redirectTo:
+            port: websecure
+      persistence:
+        enabled: true
+        storageClass: longhorn

@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - git:
+        repoURL: https://github.com/poporonnet/iac.git
+        revision: main
+        directories:
+          - path: k8s/apps/*
+  template:
+    metadata:
+      name: "{{ .path.basenameNormalized }}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/poporonnet/iac.git
+        targetRevision: main
+        path: "{{ .path.path }}"
+        kustomize: {}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{ .path.basenameNormalized }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

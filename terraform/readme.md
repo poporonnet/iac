@@ -29,3 +29,9 @@ resource "cloudflare_dns_record" "RESOURCE_NAME" {
 - `terraform plan`: 設定の内容を確認
 - `terraform apply`: 設定を反映
 
+認証情報が必須なので
+```bash
+export CLOUDFLARE_API_TOKEN=""
+export CLOUDFLARE_ZONE_ID="878133051abf4697f6c4151e0b8b425a"
+```
+を入れよ

@@ -1,0 +1,12 @@
+resources:
+  - https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.yaml
+  - ./resources/cluster-issuer.yaml
+  - ./resources/staging-cluster-issuer.yaml
+  - ./resources/cluster-issuer-poporon-org.yaml
+
+generators:
+  - ksops.yaml
+
+configurations:
+  - kustomize-config.yaml
+

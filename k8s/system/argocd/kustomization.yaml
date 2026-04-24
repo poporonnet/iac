@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  - resources/namespace.yaml
+  - resources/ingress.yaml
+  - resources/certificate.yaml
+  - resources/external-secret.yaml
+  - resources/system-appset.yaml
+  - resources/apps-appset.yaml
+helmCharts:
+  - name: argo-cd
+    repo: https://argoproj.github.io/argo-helm
+    version: "9.5.4"
+    releaseName: argocd
+    namespace: argocd
+    valuesInline:
+      global:
+        domain: argocd.poporon.org
+      configs:
+        params:
+          server.insecure: true
+        cm:
+          url: https://argocd.poporon.org
+          oidc.config: |
+            name: Zitadel
+            issuer: https://zitadel.poporon.org
+            clientID: $argocd-oidc:client_id
+            clientSecret: $argocd-oidc:client_secret
+            requestedScopes:
+              - openid
+              - profile
+              - email
+        rbac:
+          policy.default: role:admin
