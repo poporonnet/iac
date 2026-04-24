@@ -10,7 +10,7 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/poporonnet/iac.git
-        revision: k8s
+        revision: main
         directories:
           - path: k8s/system/*
   template:
@@ -20,10 +20,9 @@ spec:
       project: default
       source:
         repoURL: https://github.com/poporonnet/iac.git
-        targetRevision: k8s
+        targetRevision: main
         path: "{{ .path.path }}"
-        kustomize:
-          buildOptions: "--enable-helm"
+        kustomize: {}
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .path.basenameNormalized }}"

@@ -4,3 +4,4 @@ terraform/terraform.tfstate.*
 
 compose/vault/data/*
 !compose/vault/data/.gitkeep
+k8s/**/charts/*
