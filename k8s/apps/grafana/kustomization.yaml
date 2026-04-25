@@ -27,6 +27,8 @@ helmCharts:
         size: 5Gi
 
       grafana.ini:
+        log:
+          level: debug
         server:
           domain: grafana.poporon.org
           root_url: https://grafana.poporon.org
@@ -36,7 +38,7 @@ helmCharts:
           enabled: true
           name: Zitadel
           allow_sign_up: true
-          scopes: openid profile email
+          scopes: openid profile email roles
           auth_url: https://zitadel.poporon.org/oauth/v2/authorize
           token_url: https://zitadel.poporon.org/oauth/v2/token
           api_url: https://zitadel.poporon.org/oidc/v1/userinfo
