@@ -4,6 +4,7 @@ resources:
   - ./resources/staging-cluster-issuer.yaml
   - ./resources/cluster-issuer-poporon-org.yaml
   - ./resources/external-secret.yaml
+  - ./resources/podmonitor.yaml
 
 configurations:
   - kustomize-config.yaml
