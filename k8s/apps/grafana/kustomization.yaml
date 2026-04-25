@@ -49,6 +49,21 @@ helmCharts:
 
       envFromSecret: grafana
 
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+              isDefault: true
+            - name: Loki
+              type: loki
+              url: http://loki.loki.svc.cluster.local:3100
+            - name: Tempo
+              type: tempo
+              url: http://tempo.tempo.svc.cluster.local:3100
+
       ingress:
         enabled: true
         ingressClassName: traefik
