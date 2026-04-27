@@ -23,8 +23,10 @@ helmCharts:
 
       persistence:
         enabled: true
-        storageClassName: longhorn
+        storageClassName: longhorn-static
         size: 5Gi
+        accessModes:
+          - ReadWriteMany
 
       grafana.ini:
         log:
