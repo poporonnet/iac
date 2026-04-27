@@ -77,9 +77,11 @@ helmCharts:
             hosts:
               - grafana.poporon.org
 
+      replicas: 2
+
       resources:
         requests:
           cpu: 10m
-          memory: 128Mi
-        limits:
           memory: 256Mi
+        limits:
+          memory: 512Mi
