@@ -6,9 +6,9 @@ spec:
   capacity:
     storage: 5Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn
+  storageClassName: longhorn-static
   csi:
     driver: driver.longhorn.io
     volumeHandle: grafana
