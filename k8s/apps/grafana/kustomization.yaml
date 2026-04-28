@@ -4,7 +4,6 @@ namespace: grafana
 resources:
   - ./resources/namespace.yaml
   - ./resources/external-secret.yaml
-  - ./resources/ingress.yaml
   - ./resources/pv.yaml
 helmCharts:
   - name: grafana
@@ -75,7 +74,7 @@ helmCharts:
         hosts:
           - grafana.poporon.org
         tls:
-          - secretName: grafana-tls
+          - secretName: wildcard-poporon-org-tls
             hosts:
               - grafana.poporon.org
 
