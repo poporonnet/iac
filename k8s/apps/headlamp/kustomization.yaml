@@ -13,7 +13,7 @@ helmCharts:
     valuesInline:
       config:
         oidc:
-          clientID: "$(HEADLAMP_OIDC_CLIENT_ID)"
+          clientID: "370589210324763360"
           issuerURL: https://zitadel.poporon.org
           scopes: "openid profile email"
 
