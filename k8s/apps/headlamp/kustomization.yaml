@@ -52,9 +52,6 @@ patches:
           spec:
             containers:
               - name: headlamp
-                env:
-                  - name: HEADLAMP_OIDC_CLIENT_ID
-                    valueFrom:
-                      secretKeyRef:
-                        name: headlamp
-                        key: oidc-client-id
+                envFrom:
+                  - secretRef:
+                      name: headlamp
