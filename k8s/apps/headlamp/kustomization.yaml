@@ -6,7 +6,7 @@ resources:
   - ./resources/external-secret.yaml
 helmCharts:
   - name: headlamp
-    repo: https://headlamp-k8s.github.io/headlamp/
+    repo: https://kubernetes-sigs.github.io/headlamp/
     version: "0.41.0"
     releaseName: headlamp
     namespace: headlamp
