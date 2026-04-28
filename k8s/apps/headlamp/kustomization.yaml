@@ -14,7 +14,6 @@ helmCharts:
       config:
         oidc:
           clientID: "$(HEADLAMP_OIDC_CLIENT_ID)"
-          clientSecret: "$(HEADLAMP_OIDC_CLIENT_SECRET)"
           issuerURL: https://zitadel.poporon.org
           scopes: "openid profile email"
 
@@ -24,11 +23,6 @@ helmCharts:
             secretKeyRef:
               name: headlamp
               key: oidc-client-id
-        - name: HEADLAMP_OIDC_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: headlamp
-              key: oidc-client-secret
 
       ingress:
         enabled: true
