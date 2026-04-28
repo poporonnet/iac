@@ -67,3 +67,10 @@ patches:
                     value: "https://headlamp.poporon.org/oidc/callback"
                   - name: OIDC_USE_PKCE
                     value: "true"
+                  - name: OIDC_VALIDATOR_CLIENT_ID
+                    valueFrom:
+                      secretKeyRef:
+                        name: headlamp
+                        key: clientID
+                  - name: OIDC_VALIDATOR_ISSUER_URL
+                    value: "https://zitadel.poporon.org"
