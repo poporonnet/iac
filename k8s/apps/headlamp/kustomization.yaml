@@ -52,6 +52,14 @@ patches:
           spec:
             containers:
               - name: headlamp
-                envFrom:
-                  - secretRef:
-                      name: headlamp
+                env:
+                  - $patch: replace
+                  - name: OIDC_CLIENT_ID
+                    valueFrom:
+                      secretKeyRef:
+                        name: headlamp
+                        key: clientID
+                  - name: OIDC_ISSUER_URL
+                    value: "https://zitadel.poporon.org"
+                  - name: OIDC_SCOPES
+                    value: "openid profile email"
