@@ -63,3 +63,7 @@ patches:
                     value: "https://zitadel.poporon.org"
                   - name: OIDC_SCOPES
                     value: "openid profile email"
+                  - name: OIDC_CALLBACK_URL
+                    value: "https://headlamp.poporon.org/oidc/callback"
+                  - name: OIDC_USE_PKCE
+                    value: "true"
