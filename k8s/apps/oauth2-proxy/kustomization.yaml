@@ -32,13 +32,12 @@ helmCharts:
         enabled: true
         className: traefik
         annotations:
-          cert-manager.io/cluster-issuer: cluster-issuer
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           traefik.ingress.kubernetes.io/router.tls: "true"
         hosts:
           - oauthproxy.poporon.org
         tls:
-          - secretName: oauth2-proxy-tls
+          - secretName: wildcard-poporon-org-tls
             hosts:
               - oauthproxy.poporon.org
 

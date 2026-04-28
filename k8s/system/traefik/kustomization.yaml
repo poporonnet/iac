@@ -4,6 +4,8 @@ resources:
   - namespace.yaml
   - oauth2-proxy-middleware.yaml
   - external-secret.yaml
+  - certificate.yaml
+  - tlsstore.yaml
 helmCharts:
   - name: traefik
     repo: https://helm.traefik.io/traefik

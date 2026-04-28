@@ -1,0 +1,54 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: headlamp
+resources:
+  - ./resources/namespace.yaml
+  - ./resources/external-secret.yaml
+helmCharts:
+  - name: headlamp
+    repo: https://headlamp-k8s.github.io/headlamp/
+    version: "0.26.0"
+    releaseName: headlamp
+    namespace: headlamp
+    valuesInline:
+      config:
+        oidc:
+          clientID: "$(HEADLAMP_OIDC_CLIENT_ID)"
+          clientSecret: "$(HEADLAMP_OIDC_CLIENT_SECRET)"
+          issuerURL: https://zitadel.poporon.org
+          scopes: "openid profile email"
+
+      env:
+        - name: HEADLAMP_OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: headlamp
+              key: oidc-client-id
+        - name: HEADLAMP_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: headlamp
+              key: oidc-client-secret
+
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: "true"
+        hosts:
+          - host: headlamp.poporon.org
+            paths:
+              - path: /
+                type: Prefix
+        tls:
+          - secretName: wildcard-poporon-org-tls
+            hosts:
+              - headlamp.poporon.org
+
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi

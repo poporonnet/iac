@@ -55,7 +55,7 @@ helmCharts:
                 - path: /ui/v2/login
                   pathType: Prefix
           tls:
-            - secretName: zitadel-tls
+            - secretName: wildcard-poporon-org-tls
               hosts:
                 - zitadel.poporon.org
       replicaCount: 1
@@ -63,7 +63,6 @@ helmCharts:
         enabled: true
         className: traefik
         annotations:
-          cert-manager.io/cluster-issuer: cluster-issuer
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           traefik.ingress.kubernetes.io/router.tls: "true"
           traefik.ingress.kubernetes.io/service.serversscheme: h2c

@@ -4,7 +4,6 @@ namespace: argocd
 resources:
   - resources/namespace.yaml
   - resources/ingress.yaml
-  - resources/certificate.yaml
   - resources/external-secret.yaml
   - resources/system-appset.yaml
   - resources/apps-appset.yaml
