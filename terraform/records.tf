@@ -1,19 +1,7 @@
 resource "cloudflare_dns_record" "terraform_managed_resource_c43c2de31a0100c1497475ffb8f1a736_0" {
   comment  = "Gitea(PROD)用/管理者: @laminne"
-  content  = "116.80.80.106"
+  content  = "133.18.124.103"
   name     = "git.poporon.org"
-  proxied  = false
-  tags     = []
-  ttl      = 1
-  type     = "A"
-  zone_id  = "878133051abf4697f6c4151e0b8b425a"
-  settings = {}
-}
-
-resource "cloudflare_dns_record" "terraform_managed_resource_8f90ea62a94daeb74c7a6a8eb84f3d44_1" {
-  comment  = "Authentik(PROD)用/管理者: @laminne"
-  content  = "172.234.80.75"
-  name     = "id.poporon.org"
   proxied  = false
   tags     = []
   ttl      = 1
@@ -24,24 +12,12 @@ resource "cloudflare_dns_record" "terraform_managed_resource_8f90ea62a94daeb74c7
 
 resource "cloudflare_dns_record" "terraform_managed_resource_d1c7196539db6fbe870343dd28af21ad_2" {
   comment  = "ilu-t用 / 管理: @laminne"
-  content  = "116.80.80.106"
+  content  = "133.18.124.103"
   name     = "ilu-t.poporon.org"
   proxied  = true
   tags     = []
   ttl      = 1
   type     = "A"
-  zone_id  = "878133051abf4697f6c4151e0b8b425a"
-  settings = {}
-}
-
-resource "cloudflare_dns_record" "terraform_managed_resource_b58f9a72876bd7a7d0d6ba1ddbc0878b_3" {
-  comment  = "Gitea(PROD)用/管理者: @laminne"
-  content  = "2400:8905::2000:daff:fe2a:9bbd"
-  name     = "git.poporon.org"
-  proxied  = false
-  tags     = []
-  ttl      = 1
-  type     = "AAAA"
   zone_id  = "878133051abf4697f6c4151e0b8b425a"
   settings = {}
 }
@@ -222,7 +198,7 @@ resource "cloudflare_dns_record" "terraform_managed_resource_797304e6d54907c044c
 }
 
 resource "cloudflare_dns_record" "terraform_managed_resource_91369f06f96dbb40a603129aa23bfb76_18" {
-  content  = "\"v=DMARC1; p=none; rua=mailto:78a84b2960ba4f1ba848a494f6462e87@dmarc-reports.cloudflare.net\""
+  content  = "\"v=DMARC1; p=reject; rua=mailto:78a84b2960ba4f1ba848a494f6462e87@dmarc-reports.cloudflare.net\""
   name     = "_dmarc.poporon.org"
   proxied  = false
   tags     = []
