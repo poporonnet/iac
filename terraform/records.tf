@@ -233,7 +233,7 @@ resource "cloudflare_dns_record" "terraform_managed_resource_e0a197d8c9df185bf5c
 }
 
 resource "cloudflare_dns_record" "test" {
-  content  = "10.128.0.2"
+  content  = "http://34.173.248.80/"
   name     = "test.poporon.org"
   proxied  = false
   tags     = []
