@@ -1,0 +1,70 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitea-to-forgejo
+  namespace: forgejo
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: alpine:3.22.1
+          command:
+            - /bin/sh
+            - -euc
+            - |
+              test -d /source/git/repositories
+              test ! -e /destination/.gitea-migration-complete
+
+              if [ ! -e /destination/.gitea-migration-in-progress ]; then
+                test -z "$(find /destination/git/repositories -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null)"
+                touch /destination/.gitea-migration-in-progress
+              fi
+
+              for path in \
+                git/repositories \
+                git/lfs \
+                gitea/actions_artifacts \
+                gitea/actions_log \
+                gitea/attachments \
+                gitea/avatars \
+                gitea/packages \
+                gitea/repo-archive \
+                gitea/repo-avatars
+              do
+                if [ -d "/source/${path}" ]; then
+                  mkdir -p "/destination/${path}"
+                  cp -a "/source/${path}/." "/destination/${path}/"
+                fi
+              done
+
+              mv /destination/.gitea-migration-in-progress /destination/.gitea-migration-complete
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: source
+              mountPath: /source
+              readOnly: true
+            - name: destination
+              mountPath: /destination
+      volumes:
+        - name: source
+          persistentVolumeClaim:
+            claimName: gitea-forgejo-migration-source
+            readOnly: true
+        - name: destination
+          persistentVolumeClaim:
+            claimName: forgejo-shared-storage
