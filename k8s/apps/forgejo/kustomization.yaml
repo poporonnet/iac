@@ -172,13 +172,3 @@ helmCharts:
 
       test:
         enabled: false
-
-# Keep Forgejo stopped until the snapshot migration and Vault setup are complete.
-patches:
-  - target:
-      kind: Deployment
-      name: forgejo
-    patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 0
