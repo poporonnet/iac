@@ -35,6 +35,8 @@ spec:
           - name: docker-data
             emptyDir:
               sizeLimit: 20Gi
+          - name: tmp
+            emptyDir: {}
         initContainers:
           - name: dind
             image: docker:27.5.1-dind
@@ -104,6 +106,8 @@ spec:
               - name: docker-certs
                 mountPath: /certs
                 readOnly: true
+              - name: tmp
+                mountPath: /tmp
   triggers:
     - type: forgejo-runner
       metadata:
