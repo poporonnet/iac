@@ -4,7 +4,7 @@ metadata:
   name: forgejo-runner
   namespace: forgejo-runner
 spec:
-  pollingInterval: 30
+  pollingInterval: 5
   minReplicaCount: 0
   maxReplicaCount: 5
   successfulJobsHistoryLimit: 3

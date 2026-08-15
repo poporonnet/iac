@@ -162,6 +162,8 @@ helmCharts:
           indexer:
             ISSUE_INDEXER_TYPE: db
             REPO_INDEXER_ENABLED: false
+          actions:
+            DEFAULT_ACTIONS_URL: https://github.com
           metrics:
             ENABLED: true
 

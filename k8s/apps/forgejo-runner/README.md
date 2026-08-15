@@ -2,6 +2,7 @@
 
 KEDAが`ubuntu-latest`ラベルの待機ジョブ数を監視し、ジョブごとにForgejo Runner Podを作成する。
 待機ジョブがない場合、Runner Podは0個になる。
+`actions/checkout`などの省略形式のActionは、Forgejo本体の設定によりGitHubから取得する。
 
 Runnerは公式イメージの`one-job`モードで動作する。
 各Podは専用のDocker-in-Docker daemonを持ち、別のジョブやクラスタノードのDocker daemonを共有しない。
