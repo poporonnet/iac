@@ -1,0 +1,184 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: forgejo
+resources:
+  - ./resources/namespace.yaml
+  - ./resources/external-secret.yaml
+  - ./resources/certificate.yaml
+helmCharts:
+  - name: forgejo
+    repo: oci://code.forgejo.org/forgejo-helm
+    version: "17.1.4"
+    releaseName: forgejo
+    namespace: forgejo
+    valuesInline:
+      replicaCount: 1
+
+      strategy:
+        type: Recreate
+
+      image:
+        rootless: true
+
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+
+      podSecurityContext:
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      persistence:
+        enabled: true
+        create: true
+        mount: true
+        claimName: forgejo-shared-storage
+        size: 20Gi
+        accessModes:
+          - ReadWriteMany
+        storageClass: longhorn-retain
+
+      service:
+        http:
+          type: ClusterIP
+          port: 3000
+        ssh:
+          type: ClusterIP
+          port: 22
+
+      ingress:
+        enabled: true
+        className: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: "true"
+        hosts:
+          - host: git.poporon.org
+            paths:
+              - path: /
+                pathType: Prefix
+                port: http
+        tls:
+          - secretName: forgejo-tls
+            hosts:
+              - git.poporon.org
+
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: forgejo
+
+      gitea:
+        admin:
+          username: ""
+          password: ""
+
+        additionalConfigFromEnvs:
+          - name: FORGEJO__DATABASE__PASSWD
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: database-password
+          - name: FORGEJO__SECURITY__SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: secret-key
+          - name: FORGEJO__SECURITY__INTERNAL_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: internal-token
+          - name: FORGEJO__OAUTH2__JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: oauth2-jwt-secret
+          - name: FORGEJO__SERVER__LFS_JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: lfs-jwt-secret
+          - name: FORGEJO__QUEUE__CONN_STR
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: valkey-queue-uri
+          - name: FORGEJO__CACHE__HOST
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: valkey-cache-uri
+          - name: FORGEJO__SESSION__PROVIDER_CONFIG
+            valueFrom:
+              secretKeyRef:
+                name: forgejo-config
+                key: valkey-session-uri
+
+        config:
+          APP_NAME: Forgejo
+          RUN_MODE: prod
+          repository:
+            ROOT: /data/git/repositories
+          server:
+            APP_DATA_PATH: /data/gitea
+            DOMAIN: git.poporon.org
+            ROOT_URL: https://git.poporon.org/
+            SSH_DOMAIN: git.poporon.org
+            SSH_PORT: 22
+            SSH_LISTEN_PORT: 2222
+            LFS_START_SERVER: true
+          lfs:
+            PATH: /data/git/lfs
+          database:
+            DB_TYPE: postgres
+            HOST: 10.33.2.25:5432
+            NAME: forgejo
+            USER: gitea
+            SSL_MODE: disable
+          queue:
+            TYPE: redis
+          cache:
+            ENABLED: true
+            ADAPTER: redis
+          session:
+            PROVIDER: redis
+          indexer:
+            ISSUE_INDEXER_TYPE: db
+            REPO_INDEXER_ENABLED: false
+          metrics:
+            ENABLED: true
+
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+
+      test:
+        enabled: false
+
+# Keep Forgejo stopped until the snapshot migration and Vault setup are complete.
+patches:
+  - target:
+      kind: Deployment
+      name: forgejo
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 0

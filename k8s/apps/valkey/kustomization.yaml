@@ -1,0 +1,99 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: valkey
+resources:
+  - ./resources/namespace.yaml
+  - ./resources/external-secret.yaml
+  - ./resources/network-policy.yaml
+helmCharts:
+  - name: valkey
+    repo: https://valkey.io/valkey-helm/
+    version: "0.11.0"
+    releaseName: valkey
+    namespace: valkey
+    valuesInline:
+      fullnameOverride: valkey
+
+      auth:
+        enabled: true
+        usersExistingSecret: valkey
+        aclUsers:
+          default:
+            permissions: "~* &* +@all"
+
+      dataStorage:
+        enabled: true
+        requestedSize: 1Gi
+        className: longhorn-retain
+        accessModes:
+          - ReadWriteOnce
+        keepPvc: true
+
+      deploymentStrategy: Recreate
+
+      readinessProbe:
+        enabled: true
+        customProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -ec
+              - VALKEYCLI_AUTH="$(cat /valkey-users-secret/default)" valkey-cli ping | grep -qx PONG
+
+      startupProbe:
+        enabled: true
+        customProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -ec
+              - VALKEYCLI_AUTH="$(cat /valkey-users-secret/default)" valkey-cli ping | grep -qx PONG
+
+      livenessProbe:
+        enabled: true
+        customProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -ec
+              - VALKEYCLI_AUTH="$(cat /valkey-users-secret/default)" valkey-cli ping | grep -qx PONG
+
+      extraValkeySecrets:
+        - name: valkey
+          mountPath: /valkey-users-secret
+
+      valkeyConfig: |
+        appendonly yes
+        appendfsync everysec
+
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+
+      metrics:
+        enabled: true
+        exporter:
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+        serviceMonitor:
+          enabled: true
+
+patches:
+  - target:
+      kind: Pod
+      name: valkey-test-auth-existing
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: valkey-test-auth-existing

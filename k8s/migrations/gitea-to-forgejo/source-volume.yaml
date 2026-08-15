@@ -1,0 +1,14 @@
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: gitea-forgejo-migration-source
+  namespace: longhorn-system
+spec:
+  accessMode: rwo
+  cloneMode: full-copy
+  dataEngine: v1
+  dataLocality: disabled
+  dataSource: snap://gitea/gitea-pre-forgejo-20260814t121255z
+  frontend: blockdev
+  numberOfReplicas: 1
+  size: "10737418240"
